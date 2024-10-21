@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -85,6 +87,25 @@ public class SellerFormController implements Initializable {
 		if (fields.contains("Name")) {
 			labelErrorName.setText(errors.get("Name"));
 		}
+		
+		if (fields.contains("Email")) {
+			labelErrorEmail.setText(errors.get("Email"));
+		}
+		
+		if (fields.contains("BirthDate")) {
+			labelErrorBirthDate.setText(errors.get("BirthDate"));
+		}
+		
+		if (fields.contains("BaseSalary")) {
+			labelErrorBaseSalary.setText(errors.get("BaseSalary"));
+		}
+		
+//		Another method
+//		labelErrorName.setText((fields.contains("Name") ? errors.get("Name") : ""));
+//		labelErrorEmail.setText((fields.contains("Email") ? errors.get("Email") : ""));
+//		labelErrorBirthDate.setText((fields.contains("BirthDate") ? errors.get("BirthDate") : ""));
+//		labelErrorBaseSalary.setText((fields.contains("BaseSalary") ? errors.get("BaseSalary") : ""));
+		
 	}
 
 	public void subscribeDataChangeListener(DataChangeListener listener) {
@@ -129,6 +150,28 @@ public class SellerFormController implements Initializable {
 		} else {
 			obj.setName(txtName.getText());
 		}
+		
+		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			exception.addError("Email", "Field can't be empty");
+		} else {
+			obj.setEmail(txtEmail.getText());
+		}
+		
+		if (dpBirthDate.getValue() == null) {
+			exception.addError("BirthDate", "Field can't be empty");
+		} else {
+			Instant instant = Instant.from(dpBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setBirthdate(Date.from(instant));
+		}
+		
+		if (txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {
+			exception.addError("BaseSalary", "Field can't be empty");
+		} else {
+			obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
+		}
+		
+		obj.setDepartment(comboBoxDepartment.getValue());
+		
 		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
